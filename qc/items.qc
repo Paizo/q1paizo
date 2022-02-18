@@ -195,7 +195,14 @@ void() health_touch =
 	sprint(other, s);
 	sprint(other, " health\n");
 
-	// health touch sound
+	if (other.is_poisoned)
+    {
+        dprint(other.netname);
+        dprint(" has been cured\n");
+        other.is_poisoned = 0;
+    }
+
+// health touch sound
 	sound(other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
 
 	stuffcmd (other, "bf\n");

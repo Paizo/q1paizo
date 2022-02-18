@@ -1437,6 +1437,12 @@ void(entity targ, entity attacker) ClientObituary =
 				bprint (" fell to his death\n");
 				return;
 			}
+			if (targ.deathtype == "poisoned")
+			{
+				targ.deathtype = string_null;
+				bprint (" was poisoned\n");
+				return;
+            }
 
 			bprint (" died\n");
 		}
