@@ -99,3 +99,14 @@
 "classname" "monster_spider21"
 "origin" "336 16 72"
 }
+// entity 9
+{
+"classname" "light"
+"origin" "-8 -136 392"
+}
+// entity 10
+{
+"classname" "light"
+"origin" "328 8 392"
+"light" "500"
+}
