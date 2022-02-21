@@ -27,33 +27,21 @@ void() spid_walk1     =[      $frame1,       spid_walk2    ] {
 if (random() < 0.2)
 	sound (self, CHAN_VOICE, "shalrath/idle.wav", 1, ATTN_IDLE);
 ai_walk(4);};
-void() spid_walk2     =[      $frame2,       spid_walk3    ] {
-	sound (self,CHAN_VOICE, "spider/tap.wav", 1, ATTN_IDLE);
-        ai_walk(4);};
+void() spid_walk2     =[      $frame2,       spid_walk3    ] {ai_walk(4);};
 void() spid_walk3     =[      $frame3,       spid_walk4    ] {ai_walk(4);};
-void() spid_walk4     =[      $frame4,       spid_walk5    ] {
-	sound (self,CHAN_VOICE, "spider/tap.wav", 1, ATTN_IDLE);
-        ai_walk(4);};
+void() spid_walk4     =[      $frame4,       spid_walk5    ] {ai_walk(4);};
 void() spid_walk5     =[      $frame5,       spid_walk6    ] {ai_walk(4);};
-void() spid_walk6     =[      $frame6,       spid_walk7    ] {
-	sound (self,CHAN_VOICE, "spider/tap.wav", 1, ATTN_IDLE);
-        ai_walk(4);};
+void() spid_walk6     =[      $frame6,       spid_walk7    ] {ai_walk(4);};
 void() spid_walk7     =[      $frame7,       spid_walk8    ] {ai_walk(4);};
-void() spid_walk8     =[      $frame8,       spid_walk9    ] {
-	sound (self,CHAN_VOICE, "spider/tap.wav", 1, ATTN_IDLE);
-        ai_walk(4);};
+void() spid_walk8     =[      $frame8,       spid_walk9    ] {ai_walk(4);};
 void() spid_walk9     =[      $frame9,       spid_walk10    ] {ai_walk(4);};
-void() spid_walk10    =[      $frame10,       spid_walk1    ] {
-	sound (self,CHAN_VOICE, "spider/tap.wav", 1, ATTN_IDLE);
-        ai_walk(4);};
+void() spid_walk10    =[      $frame10,       spid_walk1    ] {ai_walk(4);};
 
 void() spid_run1     =[      $frame1,       spid_run2    ] {
 if (random() < 0.2)
 	sound (self, CHAN_VOICE, "shalrath/idle.wav", 1, ATTN_IDLE);
 ai_run(6);};
-void() spid_run2     =[      $frame3,       spid_run3    ] {
-	sound (self,CHAN_VOICE, "spider/tap.wav", 1, ATTN_IDLE);
-	ai_run(6);};
+void() spid_run2     =[      $frame3,       spid_run3    ] {ai_run(6);};
 void() spid_run3     =[      $frame5,       spid_run4    ] {ai_run(6);};
 void() spid_run4     =[      $frame7,       spid_run5    ] {
 	ai_run(6);
@@ -63,17 +51,11 @@ void() spid_run4     =[      $frame7,       spid_run5    ] {
 	}
 };
 void() spid_run5     =[      $frame9,       spid_run6    ] {ai_run(6);};
-void() spid_run6     =[      $frame1,       spid_run7    ] {
-	sound (self,CHAN_VOICE, "spider/tap.wav", 1, ATTN_IDLE);
-	ai_run(6);};
+void() spid_run6     =[      $frame1,       spid_run7    ] {ai_run(6);};
 void() spid_run7     =[      $frame3,       spid_run8    ] {ai_run(6);};
-void() spid_run8     =[      $frame5,       spid_run9    ] {
-	sound (self,CHAN_VOICE, "spider/tap.wav", 1, ATTN_IDLE);
-	ai_run(6);};
+void() spid_run8     =[      $frame5,       spid_run9    ] {ai_run(6);};
 void() spid_run9     =[      $frame7,       spid_run10    ] {ai_run(6);};
-void() spid_run10    =[      $frame9,       spid_run1    ] {
-	sound (self,CHAN_VOICE, "spider/tap.wav", 1, ATTN_IDLE);
-	ai_run(6);};
+void() spid_run10    =[      $frame9,       spid_run1    ] {ai_run(6);};
 
 //SC
 
@@ -228,6 +210,22 @@ void () spider_jump =
 		self.flags = self.flags - FL_ONGROUND;
 };
 
+void () spider_jump_from_wall =
+{
+    bprint("jumping from wall\n");
+    self.movetype = MOVETYPE_STEP;
+
+    ai_face();
+	makevectors (self.angles);
+    self.velocity = v_forward * 250 + '0 0 10';
+	if (self.flags & FL_ONGROUND)
+		self.flags = self.flags - FL_ONGROUND;
+
+    //TODO touch attack
+    self.think = spid_run1;
+    self.nextthink = time + 0.1;
+};
+
 
 void () spider_attack =
 {
@@ -298,17 +296,22 @@ void(float offset) SpiderMissile =
 void() aip_Spider_SplatTouch;
 void() aip_jump_to_wall =
 {
+    bprint ("jumping to wall\n");
     self.touch = aip_Spider_SplatTouch;
     makevectors (self.angles);
     self.origin_z = self.origin_z + 1;
 
     if (random() < 0.8) {
+        bprint ("jumping to wall forward + up\n");
         self.velocity = v_forward * 300 + '0 0 550';
     } else {
-        if (random() < 0.5)
-            self.velocity = v_forward * 300 + '200 0 550';
-        else
-            self.velocity = v_forward * 300 + '0 200 550';
+        if (random() < 0.5) {
+            bprint ("jumping to wall forward + a\n");
+            self.velocity = v_forward * 300 + '300 0 550';
+        } else {
+            bprint ("jumping to wall forward + b\n");
+            self.velocity = v_forward * 300 + '0 300 550';
+        }
     }
 
     if (self.flags & FL_ONGROUND)
@@ -327,41 +330,58 @@ void() aip_Spider_SplatTouch =
 	if (self.health <= 0)
 		return;
 
-	if (other.takedamage)
-	{
-	    bprint (" other.takedamage\n");
-		if ( vlen(self.velocity) > 200 )
-		{
-			ldmg = 10 + 10*random();
-			T_Damage (other, self, self, ldmg);
-		}
-	}
-
-    if (!checkbottom(self))
+    if (other.takedamage)
     {
-        bprint (" !checkbottom(self)\n");
-        if (self.flags & FL_ONGROUND)
+        bprint (" other.takedamage\n");
+        if ( vlen(self.velocity) > 200 )
         {
-            bprint (" grounded\n");
-            self.touch = SUB_Null;
-            self.think = spid_run1;
-            self.nextthink = time + 0.1;
-            return;
+            ldmg = 10 + 10*random();
+            T_Damage (other, self, self, ldmg);
         }
-    	// Not on ground, don't take damage, wall?
-    	bprint (" I'm gonna climb!\n");
-    	self.touch = SUB_Null;
-
-    	////////////////
-        self.movetype = MOVETYPE_FLY;
-        self.think = SpiderClimb;
-        self.nextthink = time + 0.01;
-    	////////////////
-    	return;
     }
 
-    self.think = spid_run1;
+    if (checkbottom(self))
+    {
+        bprint (" checkbottom TRUE\n");
+        self.touch = SUB_Null;
+        self.think = spid_run1;
+        self.nextthink = time + 0.1;
+        return;
+    }
+
+    if (self.flags & FL_ONGROUND)
+    {
+        bprint (" grounded\n");
+        self.touch = SUB_Null;
+        self.think = spid_run1;
+        self.nextthink = time + 0.1;
+        return;
+    }
+
+    if (other.takedamage)
+    {
+        self.touch = SUB_Null;
+        self.think = spid_run1;
+        self.nextthink = time + 0.1;
+        return;
+    }
+
+   	// Not on ground, don't take damage, wall?
+    bprint (" I'm gonna climb!\n");
+    self.touch = SUB_Null;
+    self.movetype = MOVETYPE_FLY;
+    makevectors (self.angles);
+    self.velocity = v_up * 400;
+    ai_face();
+
+    self.think = spider_jump_from_wall;
     self.nextthink = time + 0.1;
+//Quaaaa
+
+   //TODO rotate before climb, beware angles are not checked
+//    self.angles = vectoangles(v_up);
+//     self.angles = other.angles;
+
 }
 
 //go up and then jump to target
@@ -373,8 +393,12 @@ void() SpiderClimb =
     ai_face();
     //self.origin_z = self.origin_z + 1;
     self.velocity = v_up * 400;
+
     if (self.flags & FL_ONGROUND)
         self.flags = self.flags - FL_ONGROUND;
+
+    //TODO rotate to climb
+//    self.angles = vectoangles(v_up);
 
     self.movetype = MOVETYPE_STEP;
     self.touch = SUB_Null;
@@ -421,6 +445,8 @@ void() monster_spider21 =
 	self.th_pain = spider_pain;
     self.th_missile = spider_attack;
 	self.th_melee = spid_melee1;
+
+    self.yaw_speed = 200;
 
 	self.think = walkmonster_start;
 	self.nextthink = time + 0.1 + random ()*0.1;	
