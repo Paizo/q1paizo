@@ -16,17 +16,37 @@ $frame death1 death2 death3 death4 death5 death6 death7 death8 death9 death10
 $frame pain1 pain2 pain3 pain4 pain5 pain6 pain7 pain8 pain9 pain10 pain11
 
 void(entity attacker, float damage) spider_pain;
-void() spider_poison;
 void(float offset) SpiderMissile;
+void() Spider_Melee;
 void() aip_jump_to_wall;
-void() SpiderClimb;
+void() Spider_JumpFromWallTouch;
 
-void() spid_stand     =[      $frame1,       spid_stand    ] {ai_stand();};
+void() spid_stand2    =[      $pain2,       spid_stand3    ] {ai_stand();};
+void() spid_stand3    =[      $pain3,       spid_stand4    ] {ai_stand();};
+void() spid_stand4    =[      $pain4,       spid_stand5    ] {ai_stand();};
+void() spid_stand5    =[      $pain5,       spid_stand6    ] {ai_stand();};
+void() spid_stand6    =[      $pain4,       spid_stand7    ] {ai_stand();};
+void() spid_stand7    =[      $pain3,       spid_stand8    ] {ai_stand();};
+void() spid_stand8    =[      $pain2,       spid_stand1    ] {ai_stand();};
+void() spid_stand1 = {
+
+    self.frame = $pain1;
+    self.nextthink = time + 0.1;
+
+    if (random() < 0.001) {
+       self.think = spid_stand2;
+       return;
+    }
+
+    self.think = spid_stand1;
+    ai_stand();
+};
 
 void() spid_walk1     =[      $frame1,       spid_walk2    ] {
-if (random() < 0.2)
-	sound (self, CHAN_VOICE, "shalrath/idle.wav", 1, ATTN_IDLE);
-ai_walk(4);};
+    if (random() < 0.1)
+        sound (self, CHAN_VOICE, "shalrath/idle.wav", 1, ATTN_IDLE);
+    ai_walk(4);
+};
 void() spid_walk2     =[      $frame2,       spid_walk3    ] {ai_walk(4);};
 void() spid_walk3     =[      $frame3,       spid_walk4    ] {ai_walk(4);};
 void() spid_walk4     =[      $frame4,       spid_walk5    ] {ai_walk(4);};
@@ -38,65 +58,46 @@ void() spid_walk9     =[      $frame9,       spid_walk10    ] {ai_walk(4);};
 void() spid_walk10    =[      $frame10,       spid_walk1    ] {ai_walk(4);};
 
 void() spid_run1     =[      $frame1,       spid_run2    ] {
-if (random() < 0.2)
-	sound (self, CHAN_VOICE, "shalrath/idle.wav", 1, ATTN_IDLE);
-ai_run(6);};
-void() spid_run2     =[      $frame3,       spid_run3    ] {ai_run(6);};
-void() spid_run3     =[      $frame5,       spid_run4    ] {ai_run(6);};
-void() spid_run4     =[      $frame7,       spid_run5    ] {
-	ai_run(6);
-	if (random() < 0.5) {
-	    sound (self,CHAN_VOICE, "spider/tap.wav", 1, ATTN_IDLE);
-    	aip_jump_to_wall();
-	}
+    if (random() < 0.1)
+	    sound (self, CHAN_VOICE, "shalrath/idle.wav", 1, ATTN_IDLE);
+
+    ai_run(6);
 };
-void() spid_run5     =[      $frame9,       spid_run6    ] {ai_run(6);};
-void() spid_run6     =[      $frame1,       spid_run7    ] {ai_run(6);};
-void() spid_run7     =[      $frame3,       spid_run8    ] {ai_run(6);};
-void() spid_run8     =[      $frame5,       spid_run9    ] {ai_run(6);};
-void() spid_run9     =[      $frame7,       spid_run10    ] {ai_run(6);};
-void() spid_run10    =[      $frame9,       spid_run1    ] {ai_run(6);};
+void() spid_run2     =[      $frame2,       spid_run3    ] {ai_run(6);};
+void() spid_run3     =[      $frame3,       spid_run4    ] {ai_run(6);};
+void() spid_run4     =[      $frame4,       spid_run5    ] {ai_run(6);};
+void() spid_run5     =[      $frame5,       spid_run6    ] {ai_run(6);};
+void() spid_run6     =[      $frame6,       spid_run7    ] {ai_run(6);};
+void() spid_run7     =[      $frame7,       spid_run8    ] {ai_run(6);};
+void() spid_run8     =[      $frame8,       spid_run9    ] {ai_run(6);};
+void() spid_run9     =[      $frame9,       spid_run10    ] {ai_run(6);};
+void() spid_run10 = {
+    self.frame = $frame10;
+    ai_run(6);
+    if (random() < 0.5) {
+        if (self.flags & FL_ONGROUND) {
+            sound (self,CHAN_VOICE, "spider/tap.wav", 1, ATTN_IDLE);
+            self.think = aip_jump_to_wall;
+            self.nextthink = time + 0.1;
+            return;
+        }
+    }
+    self.think = spid_run1;
+    self.nextthink = time + 0.1;
 
-//SC
-
-void() spid_melee1	=[	$frame1,	spid_melee2	]{
-sound (self, CHAN_VOICE, "demon/dhit2.wav", 1, ATTN_NORM); 
-ai_charge(6);
-};
-void() spid_melee2      =[      $frame3,        spid_melee3     ] {ai_charge(6);};
-void() spid_melee3      =[      $frame5,        spid_melee4     ] {ai_charge(6);};
-void() spid_melee4      =[      $frame7,        spid_melee5     ] {ai_charge(6);};
-void() spid_melee5      =[      $frame9,        spid_melee6     ] {ai_charge(6);};
-void() spid_melee6      =[      $frame1,        spid_melee7     ] {ai_charge(6);};
-void() spid_melee7      =[      $frame3,        spid_melee8     ] {ai_charge(6);};
-void() spid_melee8      =[      $frame5,        spid_melee9     ] {ai_charge(6);};
-void() spid_melee9      =[      $frame7,        spid_melee10    ] {ai_charge(6);};
-void() spid_melee10     =[      $frame9,        spid_run1       ] {ai_melee();
-
-//	if (random () < 0.1)
-//		if (self.enemy.takedamage)
-//		{
-//			spider_poison ();
-//		}
 };
 
-//SC
+void() spid_melee1  	=[	    $pain6,        spid_melee2	   ] {ai_charge(10);};
+void() spid_melee2      =[      $pain7,        spid_melee3     ] {ai_charge(10);};
+void() spid_melee3      =[      $pain8,        spid_melee4     ] {ai_charge(10);};
+void() spid_melee4      =[      $pain9,        spid_melee5     ] {ai_charge(10);};
+void() spid_melee5     =[      $pain10,       spid_run1       ] {Spider_Melee();};
 
-void() spid_attack1     =[      $frame1,       spid_attack2    ] {
-sound (self, CHAN_VOICE, "shalrath/attack.wav", 1, ATTN_NORM);
-ai_charge(6);
+
+void() spid_pain1       =[      $pain1, spid_pain2      ] {
+	if (self.touch == Spider_JumpFromWallTouch)
+		return;
 };
-void() spid_attack2     =[      $frame3,       spid_attack3    ] {ai_charge(6);};
-void() spid_attack3     =[      $frame5,       spid_attack4    ] {ai_charge(6);};
-void() spid_attack4     =[      $frame7,       spid_attack5    ] {ai_charge(6);};
-void() spid_attack5     =[      $frame9,       spid_attack6    ] {ai_charge(6);};
-void() spid_attack6     =[      $frame1,       spid_attack7    ] {ai_charge(6);};
-void() spid_attack7     =[      $frame3,       spid_attack8    ] {ai_charge(6);};
-void() spid_attack8     =[      $frame5,       spid_attack9    ] {ai_charge(6);};
-void() spid_attack9     =[      $frame7,       spid_attack10   ] {ai_charge(6);};
-void() spid_attack10    =[      $frame9,       spid_run1   ] {SpiderMissile(0);};
-
-void() spid_pain1       =[      $pain1, spid_pain2      ] {};
 void() spid_pain2       =[      $pain2, spid_pain3      ] {};
 void() spid_pain3       =[      $pain3, spid_pain4      ] {};
 void() spid_pain4       =[      $pain4, spid_pain5      ] {};
@@ -161,107 +162,85 @@ void() spider_die =
 	// insert death sounds here
 };
 
-/*
-==============
-CheckSpiderJump
-
-==============
-*/
-float()	CheckSpiderJump =
+void() Spider_Melee =
 {
-	local	vector	dist;
-	local	float	d;
+	local float ldmg;
+	local vector delta;
 
-	if (self.origin_z + self.mins_z > self.enemy.origin_z + self.enemy.mins_z
-	+ 0.75 * self.enemy.size_z)
-		return FALSE;
-		
-	if (self.origin_z + self.maxs_z < self.enemy.origin_z + self.enemy.mins_z
-	+ 0.25 * self.enemy.size_z)
-		return FALSE;
-		
-	dist = self.enemy.origin - self.origin;
-	dist_z = 0;
-	
-	d = vlen(dist);
-	
-	if (d < 100)
-		return FALSE;
-		
-	if (d > 200)
-	{
-		if (random() < 0.9)
-			return FALSE;
-        }
-		
-	return TRUE;
-};
+	ai_face ();
+	walkmove (self.ideal_yaw, 12);	// allow a little closing
 
+	delta = self.enemy.origin - self.origin;
 
-void () spider_jump =
-{
-	if (!FL_ONGROUND)
+	if (vlen(delta) > 90)
 		return;
-    ai_face();
+	if (!CanDamage (self.enemy, self))
+		return;
+
+    sound (self, CHAN_WEAPON, "demon/dhit2.wav", 1, ATTN_NORM);
+	ldmg = 10 + 5*random();
+	T_Damage (self.enemy, self, self, ldmg);
+
 	makevectors (self.angles);
-	self.origin_z = self.origin_z + 1;
-    self.velocity = v_forward * 150 + '0 0 600';
-	if (self.flags & FL_ONGROUND)
-		self.flags = self.flags - FL_ONGROUND;
+	SpawnMeatSpray (self.origin + v_forward*16, 200 * random() * v_up);
 };
 
+void()	Spider_JumpFromWallTouch =
+{
+	local	float	ldmg;
+
+	if (self.health <= 0)
+		return;
+
+	if (other.takedamage)
+	{
+		if ( vlen(self.velocity) > 200 )
+		{
+			ldmg = 10 + 10*random();
+			T_Damage (other, self, self, ldmg);
+		}
+	}
+
+	if (!checkbottom(self))
+	{
+		if (self.flags & FL_ONGROUND)
+		{
+		    //fixme
+			// jump randomly to not get hung up
+			self.touch = SUB_Null;
+			self.think = spid_run1;
+			self.nextthink = time + 0.1;
+		}
+		return;	// not on ground yet
+	}
+
+	self.touch = SUB_Null;
+	self.frame = $death1;
+	self.think = spid_run1;
+	self.nextthink = time + 0.1;
+};
+
+//TODO can be a whole animation like demon jump
 void () spider_jump_from_wall =
 {
     bprint("jumping from wall\n");
-    self.movetype = MOVETYPE_STEP;
 
+    self.frame = $death1;
+    //self.movetype = MOVETYPE_STEP;
     ai_face();
+    if (random() < 0.2) {
+        SpiderMissile(0);
+    }
 	makevectors (self.angles);
-    self.velocity = v_forward * 250 + '0 0 10';
+    self.velocity = v_forward * 450 + '0 0 50';
 	if (self.flags & FL_ONGROUND)
 		self.flags = self.flags - FL_ONGROUND;
 
-    //TODO touch attack
-    self.think = spid_run1;
-    self.nextthink = time + 0.1;
-};
-
-
-void () spider_attack =
-{
-//        if (CheckSpiderJump)
-//                {
-//                if (random() < 0.5)
-//                        spider_jump();
-//                }
-//    aip_jump_to_wall();
-	spid_attack1 ();
-};
-
-
-void () poisondamage =
-{
-	if (self.is_poisoned != 0)
-		if (time >= self.poison_time)
-			{
-                        T_Damage(self,self,self,2);
-                        self.poison_time = time + 2;
-			}
-};
-
-void () spider_poison = 
-{
-	  if (self.enemy.classname == "player")
-	  {
-		  dprint (self.enemy.netname);
-	        dprint (" has been poisoned!\n");
-	  }
-        spawn_touchblood (2);
-        T_Damage (self.enemy, self, self.owner, 3);
-        self.enemy.is_poisoned = 1;
-        if (self.enemy.health <= 0)
-                self.enemy.deathtype = "poison";
-
+    //TODO touch attack, with running animation?
+    //only touch with no nextthink to keep the frame during flight
+//    self.think = spid_run1;
+//    self.nextthink = time + 0.1;
+    self.touch = Spider_JumpFromWallTouch;
 };
 
 /*
@@ -273,7 +252,8 @@ void(float offset) SpiderMissile =
 {
 	local	vector	offang;
 	local	vector	org, vec;
-	
+
+    bprint ("spider missile");
 	offang = vectoangles (self.enemy.origin - self.origin);
 	offang_y = offang_y + offset * 6;
 	
@@ -293,11 +273,15 @@ void(float offset) SpiderMissile =
 
 };
 
-void() aip_Spider_SplatTouch;
+void() Spider_ClimbTouch;
 void() aip_jump_to_wall =
 {
+
+    if (!self.enemy)
+        return;
+
     bprint ("jumping to wall\n");
-    self.touch = aip_Spider_SplatTouch;
+    self.touch = Spider_ClimbTouch;
     makevectors (self.angles);
     self.origin_z = self.origin_z + 1;
 
@@ -306,10 +290,10 @@ void() aip_jump_to_wall =
         self.velocity = v_forward * 300 + '0 0 550';
     } else {
         if (random() < 0.5) {
-            bprint ("jumping to wall forward + a\n");
+            bprint ("jumping to wall forward + right up\n");
             self.velocity = v_forward * 300 + '300 0 550';
         } else {
-            bprint ("jumping to wall forward + b\n");
+            bprint ("jumping to wall forward + left up\n");
             self.velocity = v_forward * 300 + '0 300 550';
         }
     }
@@ -323,7 +307,7 @@ void() aip_jump_to_wall =
 //no need to call traceline, the physics system is already doing that
 //with the normal of impact you can tell if it's 'ground' or not (trace_normal.z > 0.7f or something along those lines)
 
-void() aip_Spider_SplatTouch =
+void() Spider_ClimbTouch =
 {
     local	float	ldmg;
 
@@ -335,7 +319,7 @@ void() aip_Spider_SplatTouch =
         bprint (" other.takedamage\n");
         if ( vlen(self.velocity) > 200 )
         {
-            ldmg = 10 + 10*random();
+            ldmg = 5 + 10*random();
             T_Damage (other, self, self, ldmg);
         }
     }
@@ -360,54 +344,26 @@ void() aip_Spider_SplatTouch =
 
     if (other.takedamage)
     {
+        bprint (" other.takedamage 2 \n");
         self.touch = SUB_Null;
         self.think = spid_run1;
         self.nextthink = time + 0.1;
         return;
     }
 
-   	// Not on ground, don't take damage, wall?
     bprint (" I'm gonna climb!\n");
+
     self.touch = SUB_Null;
-    self.movetype = MOVETYPE_FLY;
+    //self.movetype = MOVETYPE_FLY;
     makevectors (self.angles);
     self.velocity = v_up * 400;
     ai_face();
-
+    self.frame = $death3;
     self.think = spider_jump_from_wall;
     self.nextthink = time + 0.1;
-//Quaaaa
-
-   //TODO rotate before climb, beware angles are not checked
-//    self.angles = vectoangles(v_up);
-//     self.angles = other.angles;
 
 }
 
-//go up and then jump to target
-
-void() SpiderClimb =
-{
-    makevectors (self.angles);
-//    walkmove ( (self.angles_z), 1512);
-    ai_face();
-    //self.origin_z = self.origin_z + 1;
-    self.velocity = v_up * 400;
-
-    if (self.flags & FL_ONGROUND)
-        self.flags = self.flags - FL_ONGROUND;
-
-    //TODO rotate to climb
-//    self.angles = vectoangles(v_up);
-
-    self.movetype = MOVETYPE_STEP;
-    self.touch = SUB_Null;
-    self.think = spid_run1;
-    self.nextthink = time + 0.1;
-//    self.touch = aip_Spider_SplatTouch;
-//    self.think = SpiderClimb;
-//    self.nextthink = time + 0.1;
-}
 //=================================================================
 
 /*QUAKED monster_spider (1 0 0) (-32 -32 -24) (32 32 48) Ambush
@@ -438,12 +394,12 @@ void() monster_spider21 =
 	setsize (self, '-32 -32 -24', '32 32 5');
 	self.health = 200;
 
-	self.th_stand = spid_stand;
+	self.th_stand = spid_stand1;
 	self.th_walk = spid_walk1;
 	self.th_run = spid_run1;
 	self.th_die = spider_die;
 	self.th_pain = spider_pain;
-    self.th_missile = spider_attack;
+//    self.th_missile = spider_attack;
 	self.th_melee = spid_melee1;
 
     self.yaw_speed = 200;

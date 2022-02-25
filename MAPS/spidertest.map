@@ -4,6 +4,7 @@
 {
 "classname" "worldspawn"
 "wad" "C:/quake/wads/prototype_1_2.wad"
+"ciao" "ciao"
 // brush 0
 {
 ( -64 256 16 ) ( -64 -192 16 ) ( -64 -192 -16 ) 128_blue_1 0 0 0 1 1
@@ -109,4 +110,10 @@
 "classname" "light"
 "origin" "328 8 392"
 "light" "500"
+}
+// entity 11
+{
+"classname" "light"
+"origin" "77.4641 -82.928 142.536"
+"angle" "214"
 }
