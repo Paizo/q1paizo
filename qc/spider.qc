@@ -137,10 +137,11 @@ void(entity attacker, float damage) spider_pain =
 
 void() spider_die =
 {
-// check for gib
 	if (self.health < -90)
 	{
 		sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NORM);
+        self.think = SUB_Remove;
+        self.nextthink= time + 0.1;
 		ThrowHead ("progs/gib2.mdl", self.health);
 		ThrowGib ("progs/gib1.mdl", self.health);
 		ThrowGib ("progs/gib2.mdl", self.health);
@@ -150,6 +151,7 @@ void() spider_die =
 
 	sound (self, CHAN_VOICE, "shalrath/death.wav", 1, ATTN_NORM);
     self.movetype = MOVETYPE_BOUNCE;
+    self.solid = SOLID_NOT;
     self.velocity_x = -50 + 100*random();
     self.velocity_y = -50 + 100*random();
     self.velocity_z = 300 + 300*random();
@@ -158,8 +160,6 @@ void() spider_die =
     self.avelocity_z = 0;
     self.flags = self.flags - (self.flags & FL_ONGROUND);
 	spid_death1();
-	self.solid = SOLID_NOT;
-	// insert death sounds here
 };
 
 void() Spider_Melee =
