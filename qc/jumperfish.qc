@@ -294,15 +294,15 @@ void() jf_jumpAttack =
 	ai_face();
     makevectors (self.angles);
 
-    if (self.waterlevel >= 2) {
-        bprint ("self.waterlevel\n");
-//        if (self.watertype == CONTENT_WATER)
-//            self.velocity_z = 440;
-//        else if (self.watertype == CONTENT_SLIME)
-//            self.velocity_z = 350;
-//        else
-//            self.velocity_z = 200;
-    }
+//    if (self.waterlevel >= 2) {
+//        bprint ("self.waterlevel\n");
+////        if (self.watertype == CONTENT_WATER)
+////            self.velocity_z = 440;
+////        else if (self.watertype == CONTENT_SLIME)
+////            self.velocity_z = 350;
+////        else
+////            self.velocity_z = 200;
+//    }
 
     self.attack_finished = time + 0.6;
 	self.velocity = v_forward * 300 + '0 0 300';

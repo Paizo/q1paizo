@@ -36,5 +36,9 @@ oldone.qc		// registered
 
 // custom
 
+base.qc
 spider.qc
 jumperfish.qc
+bspbbox.qc
+particleText.qc
+twin.qc

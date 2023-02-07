@@ -543,21 +543,36 @@ void() GrenadeExplode =
 	BecomeExplosion ();
 };
 
+void(entity ball, entity obj) bounce_off;
+
 void() GrenadeTouch =
 {
 	if (other == self.owner)
 		// don't explode on owner
 		return;
-	if (other.takedamage == DAMAGE_AIM)
-	{
-		GrenadeExplode();
-		return;
-	}
 	// bounce sound
 	sound (self, CHAN_WEAPON, "weapons/bounce.wav", 1, ATTN_NORM);
+
+	bounce_off(self, other);
+
 	if (self.velocity == '0 0 0')
 		self.avelocity = '0 0 0';
 };
+//void() GrenadeTouch =
+//{
+//	if (other == self.owner)
+//		// don't explode on owner
+//		return;
+//	if (other.takedamage == DAMAGE_AIM)
+//	{
+//		GrenadeExplode();
+//		return;
+//	}
+//	// bounce sound
+//	sound (self, CHAN_WEAPON, "weapons/bounce.wav", 1, ATTN_NORM);
+//	if (self.velocity == '0 0 0')
+//		self.avelocity = '0 0 0';
+//};
 
 /*
 ================
