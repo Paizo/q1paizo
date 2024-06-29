@@ -7,6 +7,6 @@ jobs:
     steps:
       - name: Hello world action step
         id: qccbuild
-        uses: Paizo/qcc-docker-action@1
+        uses: Paizo/qcc-docker-action@v1
       - name: Get the output time
         run: echo "The build output was ${{ steps.qccbuild.outputs.qcclogs }}"
