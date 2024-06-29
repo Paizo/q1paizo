@@ -7,7 +7,7 @@ jobs:
     steps:
       - name: Hello world action step
         id: qccbuild
-        uses: Paizo/qcc-docker-action@0.0.1
+        uses: Paizo/qcc-docker-action@0.0.2
       - name: pwdlogs
         run: echo "pwdlogs was ${{ steps.qccbuild.outputs.pwdlogs }}"
       - name: lslogs
