@@ -8,15 +8,36 @@ on:
         description: 'Log level'     
         required: true
         default: 'info'
-
 jobs:
-  fteqcc_job:
+  example-job:
     runs-on: ubuntu-latest
-    name: Build quakec sources
+    # defaults:
+    #   run:
+    #     working-directory: ./buildscripts
     steps:
-      - name: Hello world action step
-        id: qccbuild
-        uses: Paizo/qcc-docker-action@0.0.7
+      - name: Check out the repository to the runner
+        uses: actions/checkout@v4  
+      - name: Build QC sources
+        run: ./buildscripts/fteqcc64 -src ../qc
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: progs-mdl-bsp-sound
+          path: |
+            progs.dat
+            PROGS/**/*.MDL
+            MAPS/**/*.BSP
+            SOUND/**/*.WAV
+
+            
+# jobs:
+#   fteqcc_job:
+#     runs-on: ubuntu-latest
+#     name: Build quakec sources
+#     steps:
+#       - name: Hello world action step
+#         id: qccbuild
+#         uses: Paizo/qcc-docker-action@0.0.7
       # - name: pwdlogs
       #   run: echo "pwdlogs was ${{ steps.qccbuild.outputs.pwdlogs }}"
       # - name: lslogs
