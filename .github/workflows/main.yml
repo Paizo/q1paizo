@@ -9,14 +9,20 @@ on:
         required: true
         default: 'info'
 jobs:
-  example-job:
+  build_quake_artifacts:
     runs-on: ubuntu-latest
     # defaults:
     #   run:
     #     working-directory: ./buildscripts
     steps:
       - name: Check out the repository to the runner
-        uses: actions/checkout@v4  
+        uses: actions/checkout@v4
+      - name: temp pwd
+        run: pwd
+      - name: temp ls
+        run: ls -latrh
+      - name: temp ls_
+        run: ls -latrh ../
       - name: Build QC sources
         run: ./buildscripts/fteqcc64 -src ../qc
       - name: Archive artifacts
