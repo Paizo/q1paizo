@@ -18,7 +18,7 @@ jobs:
       - name: Check out the repository to the runner
         uses: actions/checkout@v4
       - name: Build QC sources
-        run: ./buildscripts/fteqcc64 -srcfile ../qc/progs.src
+        run: ./buildscripts/fteqcc64 -srcfile qc/progs.src
       - name: Archive artifacts
         uses: actions/upload-artifact@v4
         with:
