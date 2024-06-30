@@ -17,12 +17,6 @@ jobs:
     steps:
       - name: Check out the repository to the runner
         uses: actions/checkout@v4
-      - name: temp pwd
-        run: pwd
-      - name: temp ls
-        run: ls -latrh
-      - name: temp ls_
-        run: ls -latrh ../qc
       - name: Build QC sources
         run: ./buildscripts/fteqcc64 -srcfile ../qc/progs.src
       - name: Archive artifacts
