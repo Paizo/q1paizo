@@ -113,10 +113,18 @@ void()	twin_runatk1	=[	$runattack1,		twin_runatk2	]
 	else
 		sound (self, CHAN_WEAPON, "knight/sword1.wav", 1, ATTN_NORM);
 	ai_charge(20);
+	if (self.goalentity) {
+        eprint(self.goalentity);
+        if (self.goalentity.classname == "monster_twin") {
+            dprint("asking brother to join\n");
+            self.goalentity.think = twin_runatk2;
+            self.goalentity.nextthink = time = 0.1;
+        }
+    }
 };
-void()	twin_runatk2	=[	$runattack2,	twin_runatk3	] {ai_charge_side();};
-void()	twin_runatk3	=[	$runattack3,	twin_runatk4	] {ai_charge_side();};
-void()	twin_runatk4	=[	$runattack4,	twin_runatk5	] {ai_charge_side();};
+void()	twin_runatk2	=[	$runattack2,	twin_runatk3	] {ai_charge_side_offset(self.lefty * 30);};
+void()	twin_runatk3	=[	$runattack3,	twin_runatk4	] {ai_charge_side_offset(self.lefty * 30);};
+void()	twin_runatk4	=[	$runattack4,	twin_runatk5	] {ai_charge_side_offset(self.lefty * 30);};
 void()	twin_runatk5	=[	$runattack5,	twin_runatk6	] {ai_melee_side();};
 void()	twin_runatk6	=[	$runattack6,	twin_runatk7	] {ai_melee_side();};
 void()	twin_runatk7	=[	$runattack7,	twin_runatk8	] {ai_melee_side();};
@@ -145,7 +153,7 @@ void() ai_run_closer =
     if (self.lefty)
         ai_run_offset(45);
 
-    ai_run_offset(45);
+    ai_run_offset(-45);
 };
 
 //===========================================================================

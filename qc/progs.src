@@ -42,3 +42,4 @@ jumperfish.qc
 bspbbox.qc
 particleText.qc
 twin.qc
+boid.qc

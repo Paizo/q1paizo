@@ -38,6 +38,27 @@ void(float ofs) ai_run_offset =
 
 	walkmove (self.ideal_yaw - ofs, movedist);
 };
+
+/*
+Same as ai_charge_side but instead of aiming 30 units to the left
+you can specify how many unit, negative number aim right
+*/
+void(float angle) ai_charge_side_offset =
+{
+	local vector dtemp;
+	local float heading;
+
+	// aim to the left of the enemy for a flyby
+
+	self.ideal_yaw = vectoyaw(self.enemy.origin - self.origin);
+	ChangeYaw ();
+
+	makevectors (self.angles);
+	dtemp = self.enemy.origin - 30*v_right;
+	heading = vectoyaw(dtemp - self.origin);
+
+	walkmove(heading, 20);
+};
 /*
     Vnew = b * ( -2*(V dot N)*N + V )
     bugged, always point towards bottom

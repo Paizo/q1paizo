@@ -11,9 +11,6 @@ on:
 jobs:
   build_quake_artifacts:
     runs-on: ubuntu-latest
-    # defaults:
-    #   run:
-    #     working-directory: ./buildscripts
     steps:
       - name: Check out the repository to the runner
         uses: actions/checkout@v4
@@ -22,7 +19,7 @@ jobs:
       - name: Archive artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: progs-mdl-bsp-sound
+          name: q1paizo
           path: |
             progs.dat
             PROGS/**/*.MDL
